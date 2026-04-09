@@ -1601,55 +1601,45 @@ async function startSupabase(url, key){
 }
 
 (async () => {
-  // Prioridade: config hardcoded no arquivo > config salva no localStorage
   let url = SUPABASE_URL.trim();
   let key = SUPABASE_KEY.trim();
 
-  if(!url || !key){
-    // Tenta config salva pelo usuário na tela de configuração
+  // Fallback: tenta config salva pelo usuário
+  if (!url || !key) {
     try {
       const saved = localStorage.getItem('tf_sbcfg');
-      if(saved){
-        const c = JSON.parse(saved);
-        url = c.url || ''; key = c.key || '';
-      }
-    } catch(e){}
+      if (saved) { const c = JSON.parse(saved); url = c.url || ''; key = c.key || ''; }
+    } catch(e) {}
   } else {
-    // Config hardcoded: salva para garantir persistência
     localStorage.setItem('tf_sbcfg', JSON.stringify({ url, key }));
   }
 
-  if(url && key){
+  if (url && key) {
     try {
-      const loggedIn = await startSupabase(url, key);
-      
-      // Se chegamos aqui, as credenciais existem. 
-      // Devemos SEMPRE ocultar a tela de setup e mostrar o app.
+      // Sempre esconde setup e mostra o app
       document.getElementById('setupScreen').classList.add('hidden');
       document.getElementById('appRoot').style.display = 'flex';
 
-      if(loggedIn) return;
+      const loggedIn = await startSupabase(url, key);
+      if (loggedIn) return;
 
-      // Se não estiver logado, carrega local e mostra botão de entrar
-      tasks = JSON.parse(localStorage.getItem('tf_tasks') || '[]');
-      if(!tasks.length) seedDemo();
-      document.getElementById('authName').textContent = 'Não conectado';
-      document.getElementById('authSub').textContent = 'Clique em Entrar para sincronizar';
-      document.getElementById('btnSignIn').classList.remove('hidden');
-      setSyncDot('err');
-      renderAll_();
-      return;
-    } catch(e){
+      // Não está logado → inicia Google OAuth automaticamente
+      await sb.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href }
+      });
+
+    } catch(e) {
       console.warn('Supabase init failed:', e.message);
       useLocalMode();
-      return;
     }
+    return;
   }
 
-  // Sem config: verifica se tem dados locais e pula a tela de setup
+  // Sem config nenhuma: verifica dados locais ou mostra setup
   const local = localStorage.getItem('tf_tasks');
-  if(local){ try { if(JSON.parse(local).length > 0){ useLocalMode(); return; } } catch(e){} }
-  // Mostra tela de configuração
+  if (local) { try { if (JSON.parse(local).length > 0) { useLocalMode(); return; } } catch(e) {} }
+  // Só mostra setup se não houver config
 })();
 </script>
 </body>
