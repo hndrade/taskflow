@@ -904,18 +904,12 @@ async function afterLogin(){
 }
 
 async function signIn(){
-  if(!sb) return;
-  const mode = localStorage.getItem('tf_sbmode') || 'google';
-  if(mode === 'magiclink'){
-    const email = prompt('Seu email:');
-    if(!email) return;
-    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
-    if(error) toast('Erro: ' + error.message, false);
-    else toast('Link enviado! Verifique seu email.');
-  } else {
-    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
-    if(error) toast('Erro: ' + error.message, false);
-  }
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+
+  if(error) alert(error.message);
 }
 async function signOut(){
   if(!sb) return;
@@ -1641,6 +1635,62 @@ async function startSupabase(url, key){
   if (local) { try { if (JSON.parse(local).length > 0) { useLocalMode(); return; } } catch(e) {} }
   // Só mostra setup se não houver config
 })();
+
+async function autoInit(){
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+
+    // 🔥 usa config fixa (modo produção)
+    const url = 'https://tchlvrlqegkbpflteujm.supabase.co';
+    const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjaGx2cmxxZWdrYnBmbHRldWptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MDAyOTMsImV4cCI6MjA5MTI3NjI5M30.VXggECGvdG6pYS4EuKNc0mJMbsT_odRjLmMb4Of_0rI';
+
+    sb = createClient(url, key);
+    useSupabase = true;
+
+    // 🔥 tenta recuperar sessão salva (cache do Supabase)
+    const { data } = await sb.auth.getSession();
+
+    if(data?.session?.user){
+      sbUser = data.session.user;
+
+      // entra direto no app
+      document.getElementById('setupScreen').style.display = 'none';
+      document.getElementById('appRoot').style.display = '';
+
+      await afterLogin();
+
+    } else {
+      // não logado → mostra botão login
+      showLoginOnly();
+    }
+
+    // escuta login automático (redirect Google)
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if(session?.user){
+        sbUser = session.user;
+        document.getElementById('setupScreen').style.display = 'none';
+        document.getElementById('appRoot').style.display = '';
+        await afterLogin();
+      }
+    });
+
+  } catch(e){
+    console.error('Erro init:', e);
+  }
+}
+
+autoInit();
+
+function showLoginOnly(){
+  const box = document.querySelector('.setup-box');
+
+  box.innerHTML = `
+    <h2>🔑 Entrar no TaskFlow</h2>
+    <p>Faça login para acessar suas tarefas.</p>
+    <button class="btn btn-primary" onclick="signIn()">Entrar com Google</button>
+  `;
+}
+
 </script>
 </body>
 </html>
