@@ -428,8 +428,8 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
       <div style="display:flex;align-items:flex-end"><button class="btn btn-primary" style="height:36px;width:100%" onclick="quickAdd()">Add</button></div>
     </div>
     <div class="qa-r2">
-      <div class="fg"><label>Área</label><select id="qa-area"><option value="">—</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Outro</option></select></div>
-      <div class="fg"><label>Categoria</label><select id="qa-category"><option value="">—</option><option>Análise</option><option>Desenvolvimento</option><option>Reunião</option><option>Documentação</option><option>Revisão</option><option>Aprovação</option><option>Outro</option></select></div>
+      <div class="fg"><label>Área</label><select id="qa-area"><option value="">—</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Logística</option><option>Salesforce</option><option>Outro</option></select></div>
+      <div class="fg"><label>Categoria</label><select id="qa-category"><option value="">—</option><option>Análise</option><option>Correção</option><option>Desenvolvimento</option><option>Reunião</option><option>Documentação</option><option>Revisão</option><option>Aprovação</option><option>Comunicado</option><option>Outro</option></select></div>
       <div class="fg"><label>Planejamento</label><select id="qa-planned"><option value="auto">🤖 Automático</option><option value="yes">✅ Planejada</option><option value="no">🚨 Urgente</option></select></div>
       <div class="fg"><label>Para Hoje?</label><select id="qa-today"><option value="no">Não</option><option value="yes">✅ Sim</option></select></div>
     </div>
@@ -462,7 +462,7 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
     <select class="fsel" onchange="renderAll()" id="f-status"><option value="">Status</option><option value="pending">Pendente</option><option value="ready">Ready</option><option value="dev">Desenvolvimento</option><option value="waiting">Aguard.</option><option value="standby">Stand By</option></select>
     <select class="fsel" onchange="renderAll()" id="f-priority"><option value="">Prioridade</option><option value="critical">Crítica</option><option value="high">Alta</option><option value="medium">Média</option><option value="low">Baixa</option></select>
     <select class="fsel" onchange="renderAll()" id="f-planned"><option value="">Tipo</option><option value="yes">Planejadas</option><option value="no">Urgentes</option></select>
-    <select class="fsel" onchange="renderAll()" id="f-area"><option value="">Área</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Outro</option></select>
+    <select class="fsel" onchange="renderAll()" id="f-area"><option value="">Área</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Logística</option><option>Salesforce</option><option>Outro</option></select>
   </div>
   <div class="bulk-bar hidden" id="bulkBarAll">
     <div style="flex:1"><span id="bulkAllCount">0</span> selecionadas</div>
@@ -494,7 +494,7 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
     <input class="sbox" type="text" placeholder="🔍 Buscar..." oninput="renderTasksPage()" id="t-search">
     <select class="fsel" onchange="renderTasksPage()" id="t-status"><option value="">Status</option><option value="pending">Pendente</option><option value="ready">Ready</option><option value="dev">Desenvolvimento</option><option value="waiting">Aguard.</option><option value="done">Concluída</option><option value="standby">Stand By</option></select>
     <select class="fsel" onchange="renderTasksPage()" id="t-priority"><option value="">Prioridade</option><option value="critical">Crítica</option><option value="high">Alta</option><option value="medium">Média</option><option value="low">Baixa</option></select>
-    <select class="fsel" onchange="renderTasksPage()" id="t-area"><option value="">Área</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Outro</option></select>
+    <select class="fsel" onchange="renderTasksPage()" id="t-area"><option value="">Área</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Logística</option><option>Salesforce</option><option>Outro</option></select>
   </div>
   <div class="bulk-bar hidden" id="bulkBarTasks">
     <div style="flex:1"><span id="bulkTasksCount">0</span> selecionadas</div>
@@ -582,8 +582,8 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
       <div class="mx-filter-label">Categoria</div>
       <select class="fsel" id="mxf-category" onchange="renderMatrix()">
         <option value="">Todas</option>
-        <option>Análise</option><option>Desenvolvimento</option><option>Reunião</option>
-        <option>Documentação</option><option>Revisão</option><option>Aprovação</option><option>Outro</option>
+        <option>Análise</option><option>Correção</option><option>Desenvolvimento</option><option>Reunião</option>
+        <option>Documentação</option><option>Revisão</option><option>Aprovação</option><option>Comunicado</option><option>Outro</option>
       </select>
     </div>
 
@@ -594,7 +594,8 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
         <option value="">Todas</option>
         <option>Comercial</option><option>Financeiro</option><option>RH</option>
         <option>TI</option><option>Marketing</option><option>Operações</option>
-        <option>Jurídico</option><option>Diretoria</option><option>Outro</option>
+        <option>Jurídico</option><option>Diretoria</option><option>Logística</option>
+        <option>Salesforce</option><option>Outro</option>
       </select>
     </div>
   </div>
@@ -625,10 +626,10 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
     <div class="fg mfull"><label>Título *</label><input type="text" id="m-title" placeholder="Descreva a tarefa..."></div>
     <div class="fg mfull"><label>Descrição</label><textarea id="m-desc" placeholder="Detalhes..."></textarea></div>
     <div class="fg"><label>Área</label>
-      <select id="m-area"><option value="">—</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Outro</option></select>
+      <select id="m-area"><option value="">—</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Logística</option><option>Salesforce</option><option>Outro</option></select>
     </div>
     <div class="fg"><label>Categoria</label>
-      <select id="m-category"><option value="">—</option><option>Análise</option><option>Desenvolvimento</option><option>Reunião</option><option>Documentação</option><option>Revisão</option><option>Aprovação</option><option>Outro</option></select>
+      <select id="m-category"><option value="">—</option><option>Análise</option><option>Correção</option><option>Desenvolvimento</option><option>Reunião</option><option>Documentação</option><option>Revisão</option><option>Aprovação</option><option>Comunicado</option><option>Outro</option></select>
     </div>
     <div class="fg"><label>Prioridade</label>
       <select id="m-priority"><option value="medium">Média</option><option value="critical">Crítica</option><option value="high">Alta</option><option value="low">Baixa</option></select>
@@ -645,7 +646,7 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
       </select>
     </div>
     <div class="fg"><label>Status</label>
-      <select id="m-status"><option value="pending">Pendente</option><option value="ready">🟢 Ready</option><option value="dev">Desenvolvimento</option><option value="waiting">Aguard. Retorno</option><option value="done">Concluída</option><option value="standby">Stand By</option></select>
+      <select id="m-status"><option value="pending">Pendente</option><option value="ready">Ready</option><option value="dev">Desenvolvimento</option><option value="waiting">Aguard. Retorno</option><option value="done">Concluída</option><option value="standby">Stand By</option></select>
     </div>
     <div class="fg"><label>Data de Criação</label><input type="date" id="m-created"></div>
     <div class="fg"><label>Prazo de Entrega</label><input type="date" id="m-deadline"></div>
@@ -691,7 +692,7 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
     <div class="fg"><label>Prioridade</label><select id="r-priority"><option value="">Todas</option><option value="critical">Crítica</option><option value="high">Alta</option><option value="medium">Média</option><option value="low">Baixa</option></select></div>
     <div class="fg"><label>Status</label><select id="r-status"><option value="">Todos</option><option value="pending">Pendente</option><option value="ready">Ready</option><option value="dev">Desenvolvimento</option><option value="waiting">Aguard.</option><option value="done">Concluída</option><option value="standby">Stand By</option></select></div>
     <div class="fg"><label>Tipo</label><select id="r-planned"><option value="">Todas</option><option value="yes">Planejadas</option><option value="no">Urgentes</option></select></div>
-    <div class="fg"><label>Área</label><select id="r-area"><option value="">Todas</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Outro</option></select></div>
+    <div class="fg"><label>Área</label><select id="r-area"><option value="">Todas</option><option>Comercial</option><option>Financeiro</option><option>RH</option><option>TI</option><option>Marketing</option><option>Operações</option><option>Jurídico</option><option>Diretoria</option><option>Logística</option><option>Salesforce</option><option>Outro</option></select></div>
   </div>
   <div id="reportPreview"></div>
   <div class="modal-actions">
@@ -978,8 +979,8 @@ function daysLabel(deadline){
 }
 
 // ── INLINE EDIT ──
-const AREA_OPTS = ['','Comercial','Financeiro','RH','TI','Marketing','Operações','Jurídico','Diretoria','Outro'];
-const STATUS_OPTS = [['pending','Pendente'],['ready','🟢 Ready'],['dev','Desenvolvimento'],['waiting','Aguard. Retorno'],['done','Concluída'],['standby','Stand By']];
+const AREA_OPTS = ['','Comercial','Financeiro','RH','TI','Marketing','Operações','Jurídico','Diretoria','Logística','Salesforce','Outro'];
+const STATUS_OPTS = [['pending','Pendente'],['ready','Ready'],['dev','Desenvolvimento'],['waiting','Aguard. Retorno'],['done','Concluída'],['standby','Stand By']];
 const PRIO_OPTS   = [['critical','Crítica'],['high','Alta'],['medium','Média'],['low','Baixa']];
 
 function ieStatus(t){
@@ -1041,7 +1042,7 @@ function renderMetrics(){
   g.innerHTML = `
     <div class="metric-card mc-blue"><div class="metric-label">Para Hoje</div><div class="metric-value">${todayT.length}</div><div class="metric-sub">${active.filter(t=>( t.forToday || (t.deadline === TODAY && !t.excludedToday) )&&['critical','high'].includes(t.priority)).length} prioritárias</div></div>
     <div class="metric-card mc-red"><div class="metric-label">Atrasadas</div><div class="metric-value">${overdue.length}</div></div>
-    <div class="metric-card mc-teal"><div class="metric-label">🟢 Ready</div><div class="metric-value">${ready.length}</div><div class="metric-sub">prontas p/ iniciar</div></div>
+    <div class="metric-card mc-teal"><div class="metric-label">Ready</div><div class="metric-value">${ready.length}</div><div class="metric-sub">prontas p/ iniciar</div></div>
     <div class="metric-card mc-purple"><div class="metric-label">Críticas</div><div class="metric-value">${active.filter(t=>t.priority==='critical').length}</div></div>
     <div class="metric-card mc-yellow"><div class="metric-label">Total</div><div class="metric-value">${tasks.length}</div><div class="metric-sub">${active.length} ativas</div></div>
     <div class="metric-card mc-green"><div class="metric-label">Concluídas</div><div class="metric-value">${done.length}</div><div class="metric-sub">${tasks.length?Math.round(done.length/tasks.length*100):0}%</div></div>
@@ -1364,7 +1365,7 @@ function downloadReport(){
 
 // ── BULK IMPORT ──
 let irc = 0;
-const C_OPTS = ['','Análise','Desenvolvimento','Reunião','Documentação','Revisão','Aprovação','Outro'];
+const C_OPTS = ['','Análise','Correção','Desenvolvimento','Reunião','Documentação','Revisão','Aprovação','Comunicado','Outro'];
 function bSel(opts, isKV=false){ return '<select>'+(isKV?opts.map(([v,l])=>`<option value="${v}">${l}</option>`):opts.map(o=>`<option value="${o}">${o||'—'}</option>`)).join('')+'</select>'; }
 function irow(i){ return `<tr id="ir-${i}">
   <td style="color:var(--muted);font-size:11px;text-align:center;padding:5px 7px">${i+1}</td>
