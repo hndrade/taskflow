@@ -1621,13 +1621,17 @@ async function startSupabase(url, key){
   if(url && key){
     try {
       const loggedIn = await startSupabase(url, key);
-      if(loggedIn) return;
-
-      // Config existe mas não está logado — mostra app com botão de entrar
-      tasks = JSON.parse(localStorage.getItem('tf_tasks') || '[]');
-      if(!tasks.length) seedDemo();
+      
+      // Se chegamos aqui, as credenciais existem. 
+      // Devemos SEMPRE ocultar a tela de setup e mostrar o app.
       document.getElementById('setupScreen').classList.add('hidden');
       document.getElementById('appRoot').style.display = 'flex';
+
+      if(loggedIn) return;
+
+      // Se não estiver logado, carrega local e mostra botão de entrar
+      tasks = JSON.parse(localStorage.getItem('tf_tasks') || '[]');
+      if(!tasks.length) seedDemo();
       document.getElementById('authName').textContent = 'Não conectado';
       document.getElementById('authSub').textContent = 'Clique em Entrar para sincronizar';
       document.getElementById('btnSignIn').classList.remove('hidden');
@@ -1636,7 +1640,8 @@ async function startSupabase(url, key){
       return;
     } catch(e){
       console.warn('Supabase init failed:', e.message);
-      // Cai no modo local silenciosamente
+      useLocalMode();
+      return;
     }
   }
 
