@@ -15,7 +15,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 
 /* ── SIDEBAR ── */
 .sidebar{width:224px;background:var(--bg2);border-right:1px solid var(--border);padding:20px 14px;display:flex;flex-direction:column;gap:5px;flex-shrink:0;transition:transform .3s,background .25s;z-index:50;}
-.logo{font-size:19px;font-weight:800;color:var(--accent);margin-bottom:18px;letter-spacing:-.5px;display:flex;align-items:center;justify-content:flex-start;gap:4px;white-space:nowrap;}
+.logo{font-size:19px;font-weight:800;color:var(--accent);margin-bottom:18px;letter-spacing:-.5px;display:flex;align-items:center;justify-content:space-between;gap:6px;}
 .logo span{color:var(--accent2);}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:background .3s;}
 .sync-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
@@ -205,6 +205,10 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
 .page{display:none;}.page.active{display:block;}
 .empty{text-align:center;padding:34px;color:var(--muted);font-size:13px;}
 .dp{color:var(--red);font-weight:600;}.dok{color:var(--green);font-weight:600;}
+.dl-late{color:var(--red);font-weight:600;}
+.dl-today{color:var(--yellow);font-weight:600;}
+.dl-soon{color:var(--orange);font-weight:600;}
+.dl-ok{color:var(--text2);}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:13px;color:var(--text);box-shadow:var(--shadow);z-index:500;display:flex;align-items:center;gap:8px;max-width:300px;transition:opacity .3s;}
 .toast.hidden{opacity:0;pointer-events:none;}
 
@@ -292,7 +296,7 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-  <div class="logo">Task<span>Flow</span> <div class="sync-dot" id="syncDot" title="Status de sincronização"></div></div>
+  <div class="logo">Task<span>Flow</span><div class="sync-dot" id="syncDot" title="Status de sincronização"></div></div>
   <button class="nav-btn active" id="nb-dashboard" onclick="showPage('dashboard',this)">📊 Dashboard</button>
   <button class="nav-btn" id="nb-tasks" onclick="showPage('tasks',this)">📋 Tarefas</button>
   <button class="nav-btn" id="nb-analytics" onclick="showPage('analytics',this)">📈 Analytics</button>
@@ -787,13 +791,13 @@ const PCLASS = { critical:'b-red', high:'b-orange', medium:'b-yellow', low:'b-gr
 
 function sBadge(s){ return `<span class="badge ${SCLASS[s]||'b-gray'}"><span class="dot ${SDOT[s]||''}"></span>${LABELS.status[s]||s}</span>`; }
 function pBadge(p){ return `<span class="badge ${PCLASS[p]||'b-gray'}"><span class="pdot p-${p}"></span>${LABELS.priority[p]||p}</span>`; }
-function ptag(t){ return isPlanned(t) ? '<span class="tag-plan">✅ Planejada</span>' : '<span class="tag-unplan">🚨 Urgente</span>'; }
+function ptag(t){ return isPlanned(t) ? '<span class="tag-plan">&#x2705; Planejada</span>' : '<span class="tag-unplan">&#x1F6A8; Urgente</span>'; }
 function daysLabel(deadline){
-  const d = daysUntil(deadline); if(d === null) return '—';
-  if(d < 0) return `<span style="color:var(--red)">−${Math.abs(d)}d</span>`;
-  if(d === 0) return `<span style="color:var(--yellow)">Hoje</span>`;
-  if(d <= 3) return `<span style="color:var(--orange)">${d}d</span>`;
-  return `<span style="color:var(--text2)">${d}d</span>`;
+  const d = daysUntil(deadline); if(d === null) return '&mdash;';
+  if(d < 0)  return '<span class="dl-late">&minus;' + Math.abs(d) + 'd</span>';
+  if(d === 0) return '<span class="dl-today">Hoje</span>';
+  if(d <= 3)  return '<span class="dl-soon">' + d + 'd</span>';
+  return '<span class="dl-ok">' + d + 'd</span>';
 }
 
 // ── INLINE EDIT ──
@@ -849,7 +853,7 @@ function bulkDelete(group){ const n = sel[group].size; if(!n) return; pendingDel
 // ── METRICS ──
 function renderMetrics(){
   const active = tasks.filter(t => t.status !== 'done');
-  const todayT = tasks.filter(t => (t.forToday || t.deadline === TODAY) && t.status !== 'done');
+  const todayT = tasks.filter(t => ( t.forToday || (t.deadline === TODAY && !t.excludedToday) ) && t.status !== 'done');
   const overdue = tasks.filter(t => t.deadline && t.deadline < TODAY && t.status !== 'done');
   const done = tasks.filter(t => t.status === 'done');
   const unp = tasks.filter(t => !isPlanned(t));
@@ -858,7 +862,7 @@ function renderMetrics(){
   const avg = concluded.length ? Math.round(concluded.reduce((s,t) => s + execDays(t), 0) / concluded.length) : 0;
   const g = document.getElementById('metricsGrid'); if(!g) return;
   g.innerHTML = `
-    <div class="metric-card mc-blue"><div class="metric-label">Para Hoje</div><div class="metric-value">${todayT.length}</div><div class="metric-sub">${active.filter(t=>(t.forToday||t.deadline===TODAY)&&['critical','high'].includes(t.priority)).length} prioritárias</div></div>
+    <div class="metric-card mc-blue"><div class="metric-label">Para Hoje</div><div class="metric-value">${todayT.length}</div><div class="metric-sub">${active.filter(t=>( t.forToday || (t.deadline === TODAY && !t.excludedToday) )&&['critical','high'].includes(t.priority)).length} prioritárias</div></div>
     <div class="metric-card mc-red"><div class="metric-label">Atrasadas</div><div class="metric-value">${overdue.length}</div></div>
     <div class="metric-card mc-teal"><div class="metric-label">🟢 Ready</div><div class="metric-value">${ready.length}</div><div class="metric-sub">prontas p/ iniciar</div></div>
     <div class="metric-card mc-purple"><div class="metric-label">Críticas</div><div class="metric-value">${active.filter(t=>t.priority==='critical').length}</div></div>
@@ -871,10 +875,10 @@ function renderMetrics(){
 
 // ── TODAY ──
 function renderToday(){
-  const list = tasks.filter(t => (t.forToday || t.deadline === TODAY) && t.status !== 'done').sort((a,b) => PORD[a.priority]-PORD[b.priority]);
+  const list = tasks.filter(t => ( t.forToday || (t.deadline === TODAY && !t.excludedToday) ) && t.status !== 'done').sort((a,b) => PORD[a.priority]-PORD[b.priority]);
   document.getElementById('todayCnt').textContent = list.length;
   document.getElementById('todayTbody').innerHTML = list.length ? list.map(t => `<tr>
-    <td><div class="tgl ${t.forToday?'on':''}" onclick="toggleToday('${t.id}')"></div></td>
+    <td><div class="tgl on" onclick="toggleToday('${t.id}')"></div></td>
     <td style="font-weight:600;max-width:200px">${t.title}</td>
     <td>${ieArea(t)}</td><td>${iePriority(t)}</td><td>${ieStatus(t)}</td><td>${ieDate(t)}</td>
     <td>${ptag(t)}</td>
@@ -926,7 +930,7 @@ function renderAll(){
     const isS = sel.all.has(String(t.id));
     return `<tr class="${isS?'sel-row':''}">
       <td><div class="tgl ${isS?'on':''}" onclick="toggleSel('all','${t.id}')"></div></td>
-      <td><div class="tgl ${t.forToday?'on':''}" onclick="toggleToday('${t.id}')"></div></td>
+      <td><div class="tgl ${(t.forToday||(t.deadline===TODAY&&!t.excludedToday))?'on':''}" onclick="toggleToday('${t.id}')"></div></td>
       <td style="font-weight:600;max-width:180px">${t.title}</td>
       <td>${ieArea(t)}</td><td>${iePriority(t)}</td><td>${ieStatus(t)}</td><td>${ieDate(t)}</td>
       <td>${ptag(t)}</td><td>${daysLabel(t.deadline)}</td>
@@ -996,7 +1000,7 @@ function mcard(t, group){
       <div class="fg"><label style="font-size:10px">Prazo</label>${ieDate(t)}</div>
     </div>
     <div class="tc-actions">
-      ${group !== 'today' ? `<div class="tgl ${t.forToday?'on':''}" onclick="toggleToday('${t.id}')"></div><span style="font-size:11px;color:var(--muted);flex:1">Hoje</span>` : '<span style="flex:1"></span>'}
+      ${group !== 'today' ? `<div class="tgl ${(t.forToday||(t.deadline===TODAY&&!t.excludedToday))?'on':''}" onclick="toggleToday('${t.id}')"></div><span style="font-size:11px;color:var(--muted);flex:1">Hoje</span>` : '<span style="flex:1"></span>'}
       <button class="btn btn-sm btn-outline" onclick="openEdit('${t.id}')">✏️ Editar</button>
       <button class="btn btn-sm" style="background:rgba(239,68,68,.15);color:var(--red);border-radius:6px" onclick="deleteTask('${t.id}','${esc(t.title)}')">🗑</button>
     </div>
@@ -1119,7 +1123,23 @@ function quickAdd(){
 }
 
 // ── TOGGLE TODAY ──
-function toggleToday(id){ const t = tasks.find(x => String(x.id) === String(id)); if(t){ t.forToday = !t.forToday; save(); renderAll_(); } }
+// forToday = true  → explicitamente adicionada para hoje
+// forToday = false → não foi explicitamente adicionada
+// excludedToday = true → usuário desmarcou explicitamente (impede que deadline=hoje reapareça)
+function toggleToday(id){
+  const t = tasks.find(x => String(x.id) === String(id));
+  if(!t) return;
+  const isCurrentlyShown = t.forToday || (t.deadline === TODAY && !t.excludedToday);
+  if(isCurrentlyShown){
+    t.forToday = false;
+    t.excludedToday = true;   // bloqueia reaparição pelo deadline
+  } else {
+    t.forToday = true;
+    t.excludedToday = false;
+  }
+  save();
+  renderAll_();
+}
 
 // ── DELETE ──
 function deleteTask(id, title){ pendingDelete = { type:'single', id: String(id) }; document.getElementById('confirmTitle').textContent = 'Excluir tarefa?'; document.getElementById('confirmLabel').textContent = title || 'esta tarefa'; document.getElementById('confirmOverlay').classList.remove('hidden'); }
@@ -1227,57 +1247,97 @@ function seedDemo(){
   saveLocal();
 }
 
+// ══════════════════════════════════════════════
+//  CONFIGURAÇÃO FIXA — edite aqui uma única vez
+//  Após preencher, faça upload no GitHub.
+//  Todos os dispositivos usarão esta config.
+// ══════════════════════════════════════════════
+const SUPABASE_URL = '';  // ex: 'https://tchlvrlqegkbpflteujm.supabase.co'
+const SUPABASE_KEY = '';  // ex: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjaGx2cmxxZWdrYnBmbHRldWptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MDAyOTMsImV4cCI6MjA5MTI3NjI5M30.VXggECGvdG6pYS4EuKNc0mJMbsT_odRjLmMb4Of_0rI'
+
+// ── Wire auth-mode select ──
+document.getElementById('sb-authmode').addEventListener('change', function(){
+  document.getElementById('sb-magic-field').style.display = this.value === 'magiclink' ? '' : 'none';
+});
+
 // ── INIT ──
 initTheme();
-document.getElementById('todayDateDisplay').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+document.getElementById('todayDateDisplay').textContent =
+  new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'2-digit', month:'long'});
 
-// Try to restore Supabase session from saved config
+async function startSupabase(url, key){
+  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+  sb = createClient(url, key);
+  useSupabase = true;
+
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if(event === 'SIGNED_IN' && session && session.user && !sbUser){
+      sbUser = session.user;
+      await afterLogin();
+    }
+    if(event === 'SIGNED_OUT'){
+      sbUser = null;
+      document.getElementById('btnSignIn').classList.remove('hidden');
+      document.getElementById('btnSignOut').classList.add('hidden');
+      setSyncDot('err');
+    }
+  });
+
+  const { data } = await sb.auth.getSession();
+  if(data && data.session && data.session.user){
+    sbUser = data.session.user;
+    await afterLogin();
+    return true;
+  }
+  return false;
+}
+
 (async () => {
-  const saved = localStorage.getItem('tf_sbcfg');
-  if(saved){
+  // Prioridade: config hardcoded no arquivo > config salva no localStorage
+  let url = SUPABASE_URL.trim();
+  let key = SUPABASE_KEY.trim();
+
+  if(!url || !key){
+    // Tenta config salva pelo usuário na tela de configuração
     try {
-      const cfg = JSON.parse(saved);
-      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-      sb = createClient(cfg.url, cfg.key);
-      useSupabase = true;
-
-      // Listen for auth state — handles redirect callback from OAuth/MagicLink
-      sb.auth.onAuthStateChange(async (event, session) => {
-        if(session?.user && !sbUser){
-          sbUser = session.user;
-          await afterLogin();
-        }
-      });
-
-      // Check for existing session
-      const { data: { session } } = await sb.auth.getSession();
-      if(session?.user){
-        sbUser = session.user;
-        await afterLogin();
-        return;
+      const saved = localStorage.getItem('tf_sbcfg');
+      if(saved){
+        const c = JSON.parse(saved);
+        url = c.url || ''; key = c.key || '';
       }
-      // Config saved but not logged in — show app with sign-in prompt
+    } catch(e){}
+  } else {
+    // Config hardcoded: salva para garantir persistência
+    localStorage.setItem('tf_sbcfg', JSON.stringify({ url, key }));
+  }
+
+  if(url && key){
+    try {
+      const loggedIn = await startSupabase(url, key);
+      if(loggedIn) return;
+
+      // Config existe mas não está logado — mostra app com botão de entrar
       tasks = JSON.parse(localStorage.getItem('tf_tasks') || '[]');
       if(!tasks.length) seedDemo();
       document.getElementById('setupScreen').classList.add('hidden');
       document.getElementById('appRoot').style.display = 'flex';
       document.getElementById('authName').textContent = 'Não conectado';
-      document.getElementById('authSub').textContent = 'Clique em Entrar com Google';
+      document.getElementById('authSub').textContent = 'Clique em Entrar para sincronizar';
       document.getElementById('btnSignIn').classList.remove('hidden');
       setSyncDot('err');
       renderAll_();
+      return;
     } catch(e){
-      console.warn('Supabase restore failed:', e);
-      useLocalMode();
+      console.warn('Supabase init failed:', e.message);
+      // Cai no modo local silenciosamente
     }
-  } else {
-    // No config saved — check if there's local data and skip setup, else show setup
-    const localTasks = localStorage.getItem('tf_tasks');
-    if(localTasks && JSON.parse(localTasks).length > 0){
-      useLocalMode();
-    }
-    // else: setup screen remains visible
   }
+
+  // Sem config: verifica se tem dados locais e pula a tela de setup
+  const local = localStorage.getItem('tf_tasks');
+  if(local){ try { if(JSON.parse(local).length > 0){ useLocalMode(); return; } } catch(e){} }
+  // Mostra tela de configuração
 })();
 </script>
 </body>
+</html>
