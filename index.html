@@ -212,6 +212,85 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:13px;color:var(--text);box-shadow:var(--shadow);z-index:500;display:flex;align-items:center;gap:8px;max-width:300px;transition:opacity .3s;}
 .toast.hidden{opacity:0;pointer-events:none;}
 
+/* ── MATRIX PAGE ── */
+/* effort column header colors */
+:root{
+  --planned-card:#0d2818;   /* verde escuro */
+  --urgent-card:#2a1505;    /* marrom escuro */
+  --planned-border:#1a4a2a;
+  --urgent-border:#5a2e0a;
+}
+[data-theme="light"]{
+  --planned-card:#d4edda;
+  --urgent-card:#f5e0cc;
+  --planned-border:#82c99a;
+  --urgent-border:#e0a87a;
+}
+
+.mx-filter-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;}
+.mx-filter-group{display:flex;flex-direction:column;gap:6px;}
+.mx-filter-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
+.mx-filter-sep{width:1px;background:var(--border);align-self:stretch;margin:0 4px;}
+.mx-checks{display:flex;flex-wrap:wrap;gap:6px;}
+.mx-chk{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;}
+.mx-chk input{display:none;}
+.mx-chk-box{width:14px;height:14px;border-radius:3px;border:2px solid var(--border);display:inline-block;flex-shrink:0;transition:all .2s;}
+.mx-chk input:checked ~ .mx-chk-box{border-color:transparent;}
+.mx-chk-box.critical{background:rgba(239,68,68,.3);border-color:var(--red);}
+.mx-chk input:checked ~ .mx-chk-box.critical{background:var(--red);}
+.mx-chk-box.high{background:rgba(249,115,22,.3);border-color:var(--orange);}
+.mx-chk input:checked ~ .mx-chk-box.high{background:var(--orange);}
+.mx-chk-box.medium{background:rgba(245,158,11,.3);border-color:var(--yellow);}
+.mx-chk input:checked ~ .mx-chk-box.medium{background:var(--yellow);}
+.mx-chk-box.low{background:rgba(34,197,94,.3);border-color:var(--green);}
+.mx-chk input:checked ~ .mx-chk-box.low{background:var(--green);}
+
+.mx-legend{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.mx-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
+.mx-leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+.mx-leg-dot.planned{background:var(--planned-border);}
+.mx-leg-dot.urgent{background:var(--urgent-border);}
+
+.mx-scroll{overflow-x:auto;padding-bottom:12px;}
+.mx-grid{display:grid;min-width:900px;}
+
+/* Column = effort band; rows = priority groups */
+.mx-col-headers{display:contents;}
+.mx-effort-header{background:var(--bg3);border:1px solid var(--border);border-radius:8px 8px 0 0;padding:10px 12px;text-align:center;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;position:sticky;top:0;z-index:2;}
+.mx-effort-header .mx-eh-min{font-size:18px;font-weight:800;color:var(--text);margin-bottom:2px;}
+.mx-effort-header.col-15{border-top:3px solid var(--teal);}
+.mx-effort-header.col-30{border-top:3px solid var(--green);}
+.mx-effort-header.col-45{border-top:3px solid #84cc16;}
+.mx-effort-header.col-60{border-top:3px solid var(--yellow);}
+.mx-effort-header.col-120{border-top:3px solid var(--orange);}
+.mx-effort-header.col-300{border-top:3px solid var(--red);}
+.mx-effort-header.col-nd{border-top:3px solid var(--muted);}
+
+.mx-prio-label{background:var(--bg2);border:1px solid var(--border);border-right:none;padding:10px 10px;display:flex;align-items:flex-start;justify-content:center;writing-mode:vertical-rl;text-orientation:mixed;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;min-height:80px;border-radius:0;}
+.mx-prio-label.critical{color:var(--red);border-left:3px solid var(--red);}
+.mx-prio-label.high{color:var(--orange);border-left:3px solid var(--orange);}
+.mx-prio-label.medium{color:var(--yellow);border-left:3px solid var(--yellow);}
+.mx-prio-label.low{color:var(--green);border-left:3px solid var(--green);}
+
+.mx-cell{background:var(--bg2);border:1px solid var(--border);padding:8px;min-height:80px;display:flex;flex-direction:column;gap:6px;vertical-align:top;}
+.mx-cell.empty{background:var(--bg3);opacity:.5;}
+
+/* task card inside matrix */
+.mx-card{border-radius:7px;padding:9px 10px;cursor:pointer;transition:transform .15s,opacity .15s;border:1px solid transparent;}
+.mx-card:hover{transform:translateY(-2px);opacity:.9;}
+.mx-card.planned-card{background:var(--planned-card);border-color:var(--planned-border);}
+.mx-card.urgent-card{background:var(--urgent-card);border-color:var(--urgent-border);}
+.mx-card-title{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:5px;}
+.mx-card-status{font-size:10px;color:var(--text2);margin-bottom:4px;}
+.mx-card-meta{display:flex;flex-wrap:wrap;gap:4px;align-items:center;}
+.mx-tag{font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;white-space:nowrap;}
+.mx-tag-cat{background:rgba(108,99,255,.18);color:var(--accent);}
+.mx-tag-date{background:rgba(56,189,248,.15);color:var(--accent2);}
+.mx-tag-date.late{background:rgba(239,68,68,.18);color:var(--red);}
+.mx-tag-date.soon{background:rgba(245,158,11,.18);color:var(--yellow);}
+.mx-tag-today{background:rgba(20,184,166,.2);color:var(--teal);font-weight:700;}
+.mx-empty-cell{color:var(--muted);font-size:11px;text-align:center;padding:16px 8px;opacity:.5;}
+
 /* ── RESPONSIVE ── */
 @media(max-width:768px){
   .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);width:240px;padding-top:54px;}
@@ -298,6 +377,7 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
 <div class="sidebar" id="sidebar">
   <div class="logo">Task<span>Flow</span><div class="sync-dot" id="syncDot" title="Status de sincronização"></div></div>
   <button class="nav-btn active" id="nb-dashboard" onclick="showPage('dashboard',this)">📊 Dashboard</button>
+  <button class="nav-btn" id="nb-matrix" onclick="showPage('matrix',this)">🎯 Matriz</button>
   <button class="nav-btn" id="nb-tasks" onclick="showPage('tasks',this)">📋 Tarefas</button>
   <button class="nav-btn" id="nb-analytics" onclick="showPage('analytics',this)">📈 Analytics</button>
   <div class="nav-sep"></div>
@@ -446,6 +526,92 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
   </div>
 </div>
 
+<!-- ══ MATRIZ DE PRIORIZAÇÃO ══ -->
+<div id="page-matrix" class="page">
+  <div class="header">
+    <h1>🎯 Matriz de Priorização</h1>
+    <div class="header-actions">
+      <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Nova Tarefa</button>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="mx-filter-bar">
+    <!-- Prioridade checkboxes -->
+    <div class="mx-filter-group">
+      <div class="mx-filter-label">Prioridade</div>
+      <div class="mx-checks">
+        <label class="mx-chk"><input type="checkbox" id="mxf-critical" checked onchange="renderMatrix()"><span class="mx-chk-box critical"></span>Crítica</label>
+        <label class="mx-chk"><input type="checkbox" id="mxf-high" checked onchange="renderMatrix()"><span class="mx-chk-box high"></span>Alta</label>
+        <label class="mx-chk"><input type="checkbox" id="mxf-medium" checked onchange="renderMatrix()"><span class="mx-chk-box medium"></span>Média</label>
+        <label class="mx-chk"><input type="checkbox" id="mxf-low" checked onchange="renderMatrix()"><span class="mx-chk-box low"></span>Baixa</label>
+      </div>
+    </div>
+
+    <div class="mx-filter-sep"></div>
+
+    <!-- Prazo relativo -->
+    <div class="mx-filter-group">
+      <div class="mx-filter-label">Prazo</div>
+      <div class="mx-checks">
+        <label class="mx-chk"><input type="radio" name="mxf-date" value="" checked onchange="renderMatrix()">Todos</label>
+        <label class="mx-chk"><input type="radio" name="mxf-date" value="today" onchange="renderMatrix()">Hoje</label>
+        <label class="mx-chk"><input type="radio" name="mxf-date" value="3d" onchange="renderMatrix()">Próximos 3d</label>
+        <label class="mx-chk"><input type="radio" name="mxf-date" value="7d" onchange="renderMatrix()">Próximos 7d</label>
+        <label class="mx-chk"><input type="radio" name="mxf-date" value="fortoday" onchange="renderMatrix()">📌 Para Hoje</label>
+      </div>
+    </div>
+
+    <div class="mx-filter-sep"></div>
+
+    <!-- Status -->
+    <div class="mx-filter-group">
+      <div class="mx-filter-label">Status</div>
+      <select class="fsel" id="mxf-status" onchange="renderMatrix()">
+        <option value="">Todos</option>
+        <option value="pending">Pendente</option>
+        <option value="ready">Ready</option>
+        <option value="dev">Desenvolvimento</option>
+        <option value="waiting">Aguard.</option>
+        <option value="standby">Stand By</option>
+      </select>
+    </div>
+
+    <!-- Categoria -->
+    <div class="mx-filter-group">
+      <div class="mx-filter-label">Categoria</div>
+      <select class="fsel" id="mxf-category" onchange="renderMatrix()">
+        <option value="">Todas</option>
+        <option>Análise</option><option>Desenvolvimento</option><option>Reunião</option>
+        <option>Documentação</option><option>Revisão</option><option>Aprovação</option><option>Outro</option>
+      </select>
+    </div>
+
+    <!-- Área -->
+    <div class="mx-filter-group">
+      <div class="mx-filter-label">Área</div>
+      <select class="fsel" id="mxf-area" onchange="renderMatrix()">
+        <option value="">Todas</option>
+        <option>Comercial</option><option>Financeiro</option><option>RH</option>
+        <option>TI</option><option>Marketing</option><option>Operações</option>
+        <option>Jurídico</option><option>Diretoria</option><option>Outro</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- LEGENDA -->
+  <div class="mx-legend">
+    <div class="mx-legend-item"><span class="mx-leg-dot planned"></span>Planejada</div>
+    <div class="mx-legend-item"><span class="mx-leg-dot urgent"></span>Urgente</div>
+    <div class="mx-legend-item" style="margin-left:auto;font-size:11px;color:var(--muted)" id="mxCountLabel">0 tarefas</div>
+  </div>
+
+  <!-- MATRIZ SCROLL WRAPPER -->
+  <div class="mx-scroll">
+    <div class="mx-grid" id="matrixGrid"></div>
+  </div>
+</div>
+
 </div><!-- /main -->
 </div><!-- /app -->
 
@@ -466,6 +632,17 @@ tr.sel-row td{background:rgba(108,99,255,.10)!important;}
     </div>
     <div class="fg"><label>Prioridade</label>
       <select id="m-priority"><option value="medium">Média</option><option value="critical">Crítica</option><option value="high">Alta</option><option value="low">Baixa</option></select>
+    </div>
+    <div class="fg"><label>⏱ Esforço Estimado</label>
+      <select id="m-effort">
+        <option value="">Não definido</option>
+        <option value="15">15 min</option>
+        <option value="30">30 min</option>
+        <option value="45">45 min</option>
+        <option value="60">1 hora</option>
+        <option value="120">2 horas</option>
+        <option value="300">5 horas</option>
+      </select>
     </div>
     <div class="fg"><label>Status</label>
       <select id="m-status"><option value="pending">Pendente</option><option value="ready">🟢 Ready</option><option value="dev">Desenvolvimento</option><option value="waiting">Aguard. Retorno</option><option value="done">Concluída</option><option value="standby">Stand By</option></select>
@@ -1066,6 +1243,7 @@ function openAddModal(){
   ['m-title','m-desc','m-notes','m-completed'].forEach(id => document.getElementById(id).value = '');
   ['m-area','m-category'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('m-priority').value = 'medium';
+  document.getElementById('m-effort').value = '';
   document.getElementById('m-status').value = 'pending';
   document.getElementById('m-created').value = TODAY;
   document.getElementById('m-deadline').value = '';
@@ -1083,6 +1261,7 @@ function openEdit(id){
   document.getElementById('m-area').value = t.area || '';
   document.getElementById('m-category').value = t.category || '';
   document.getElementById('m-priority').value = t.priority;
+  document.getElementById('m-effort').value = t.effort || '';
   document.getElementById('m-status').value = t.status;
   document.getElementById('m-created').value = t.created || TODAY;
   document.getElementById('m-deadline').value = t.deadline || '';
@@ -1101,6 +1280,7 @@ function saveTask(){
     id: editingId || Date.now().toString(), title,
     desc: document.getElementById('m-desc').value, area: document.getElementById('m-area').value,
     category: document.getElementById('m-category').value, priority: document.getElementById('m-priority').value,
+    effort: document.getElementById('m-effort').value,
     status, created: document.getElementById('m-created').value || TODAY,
     deadline: document.getElementById('m-deadline').value, planned: document.getElementById('m-planned').value,
     forToday: document.getElementById('m-today').value === 'yes', notes: document.getElementById('m-notes').value,
@@ -1108,7 +1288,7 @@ function saveTask(){
   };
   if(editingId){ const i = tasks.findIndex(t => String(t.id) === String(editingId)); if(i >= 0) tasks[i] = task; }
   else tasks.push(task);
-  save(); closeModalNow(); renderAll_(); toast('Tarefa salva!');
+  save(); closeModalNow(); renderAll_(); renderMatrix(); toast('Tarefa salva!');
 }
 document.getElementById('m-status').addEventListener('change', function(){
   document.getElementById('m-completed-wrap').classList.toggle('hidden', this.value !== 'done');
@@ -1219,6 +1399,132 @@ function saveBulkImport(){
 }
 
 // ── PAGES ──
+// ── MATRIX PAGE ──
+const EFFORT_COLS = [
+  { key:'15',  label:'15 min', cls:'col-15'  },
+  { key:'30',  label:'30 min', cls:'col-30'  },
+  { key:'45',  label:'45 min', cls:'col-45'  },
+  { key:'60',  label:'1 hora', cls:'col-60'  },
+  { key:'120', label:'2 horas',cls:'col-120' },
+  { key:'300', label:'5 horas',cls:'col-300' },
+  { key:'',    label:'Não def.',cls:'col-nd' },
+];
+const PRIO_ROWS = [
+  { key:'critical', label:'Crítica' },
+  { key:'high',     label:'Alta'    },
+  { key:'medium',   label:'Média'   },
+  { key:'low',      label:'Baixa'   },
+];
+
+function mxDeadlineTag(t){
+  if(!t.deadline) return '';
+  const d = Math.ceil((new Date(t.deadline) - new Date(TODAY)) / 86400000);
+  if(d < 0)  return '<span class="mx-tag mx-tag-date late">' + Math.abs(d) + 'd atraso</span>';
+  if(d === 0) return '<span class="mx-tag mx-tag-date soon">Hoje</span>';
+  if(d <= 3)  return '<span class="mx-tag mx-tag-date soon">' + d + 'd</span>';
+  return '<span class="mx-tag mx-tag-date">' + t.deadline + '</span>';
+}
+
+function renderMatrix(){
+  const grid = document.getElementById('matrixGrid');
+  if(!grid) return;
+
+  // Read filters
+  const fCritical = document.getElementById('mxf-critical').checked;
+  const fHigh     = document.getElementById('mxf-high').checked;
+  const fMedium   = document.getElementById('mxf-medium').checked;
+  const fLow      = document.getElementById('mxf-low').checked;
+  const fDate     = document.querySelector('input[name="mxf-date"]:checked').value;
+  const fStatus   = document.getElementById('mxf-status').value;
+  const fCat      = document.getElementById('mxf-category').value;
+  const fArea     = document.getElementById('mxf-area').value;
+
+  const prioCheck = { critical: fCritical, high: fHigh, medium: fMedium, low: fLow };
+
+  // Filter tasks (exclude done)
+  let list = tasks.filter(t => {
+    if(t.status === 'done') return false;
+    if(!prioCheck[t.priority]) return false;
+    if(fStatus && t.status !== fStatus) return false;
+    if(fCat    && t.category !== fCat) return false;
+    if(fArea   && t.area !== fArea) return false;
+    if(fDate === 'today'){
+      if(!t.deadline) return false;
+      const d = Math.ceil((new Date(t.deadline) - new Date(TODAY)) / 86400000);
+      if(d !== 0) return false;
+    } else if(fDate === '3d'){
+      if(!t.deadline) return false;
+      const d = Math.ceil((new Date(t.deadline) - new Date(TODAY)) / 86400000);
+      if(d < 0 || d > 3) return false;
+    } else if(fDate === '7d'){
+      if(!t.deadline) return false;
+      const d = Math.ceil((new Date(t.deadline) - new Date(TODAY)) / 86400000);
+      if(d < 0 || d > 7) return false;
+    } else if(fDate === 'fortoday'){
+      if(!(t.forToday || (t.deadline === TODAY && !t.excludedToday))) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('mxCountLabel').textContent = list.length + ' tarefa' + (list.length !== 1 ? 's' : '');
+
+  // Active prio rows only
+  const activePrios = PRIO_ROWS.filter(r => prioCheck[r.key]);
+
+  // Grid columns: 1 label col + 7 effort cols
+  const totalCols = 1 + EFFORT_COLS.length;
+  grid.style.gridTemplateColumns = '52px repeat(' + EFFORT_COLS.length + ', minmax(130px,1fr))';
+
+  // Build HTML
+  let html = '';
+
+  // Row 1: column headers (blank corner + effort headers)
+  html += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px 0 0 0;"></div>';
+  EFFORT_COLS.forEach(col => {
+    html += '<div class="mx-effort-header ' + col.cls + '">';
+    html += '<div class="mx-eh-min">' + col.label + '</div>';
+    html += '</div>';
+  });
+
+  // Data rows: one per active priority
+  activePrios.forEach((row, ri) => {
+    // Priority label cell (rotated)
+    const isLast = ri === activePrios.length - 1;
+    html += '<div class="mx-prio-label ' + row.key + '" style="' + (isLast ? 'border-radius:0 0 0 8px' : '') + '">' + row.label + '</div>';
+
+    // Effort cells
+    EFFORT_COLS.forEach(col => {
+      const cellTasks = list.filter(t => t.priority === row.key && (t.effort || '') === col.key);
+      if(cellTasks.length === 0){
+        html += '<div class="mx-cell empty"><div class="mx-empty-cell">—</div></div>';
+      } else {
+        html += '<div class="mx-cell">';
+        cellTasks.forEach(t => {
+          const isPlannedTask = isPlanned(t);
+          const cardClass = isPlannedTask ? 'planned-card' : 'urgent-card';
+          const todayFlag = (t.forToday || (t.deadline === TODAY && !t.excludedToday));
+          html += '<div class="mx-card ' + cardClass + '" onclick="openEdit(\'' + t.id + '\')">';
+          html += '<div class="mx-card-title">' + t.title + '</div>';
+          html += '<div class="mx-card-status">' + (LABELS.status[t.status] || t.status) + '</div>';
+          html += '<div class="mx-card-meta">';
+          if(t.category) html += '<span class="mx-tag mx-tag-cat">' + t.category + '</span>';
+          html += mxDeadlineTag(t);
+          if(todayFlag) html += '<span class="mx-tag mx-tag-today">📌 Hoje</span>';
+          html += '</div></div>';
+        });
+        html += '</div>';
+      }
+    });
+  });
+
+  if(activePrios.length === 0){
+    html = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);font-size:13px">Selecione ao menos uma prioridade nos filtros.</div>';
+    grid.style.gridTemplateColumns = '1fr';
+  }
+
+  grid.innerHTML = html;
+}
+
 function showPage(id, btn){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
@@ -1226,6 +1532,7 @@ function showPage(id, btn){
   if(btn) btn.classList.add('active');
   if(id === 'analytics') renderAnalytics();
   if(id === 'tasks') renderTasksPage();
+  if(id === 'matrix') renderMatrix();
   closeSB();
 }
 
@@ -1252,8 +1559,8 @@ function seedDemo(){
 //  Após preencher, faça upload no GitHub.
 //  Todos os dispositivos usarão esta config.
 // ══════════════════════════════════════════════
-const SUPABASE_URL = '';  // ex: 'https://tchlvrlqegkbpflteujm.supabase.co'
-const SUPABASE_KEY = '';  // ex: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjaGx2cmxxZWdrYnBmbHRldWptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MDAyOTMsImV4cCI6MjA5MTI3NjI5M30.VXggECGvdG6pYS4EuKNc0mJMbsT_odRjLmMb4Of_0rI'
+const SUPABASE_URL = '';  // ex: 'https://xyzxyz.supabase.co'
+const SUPABASE_KEY = '';  // ex: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
 
 // ── Wire auth-mode select ──
 document.getElementById('sb-authmode').addEventListener('change', function(){
